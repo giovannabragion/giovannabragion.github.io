@@ -215,6 +215,19 @@ figure { margin: 0; }
 .carta .borda-geo { fill: none; stroke: #7a6448; stroke-width: 1.2; }
 .carta .ponto { fill: var(--terracota); stroke: #fff8ea; stroke-width: 1.5; cursor: pointer; }
 .carta .ponto:hover { r: 8; }
+.carta .ponto-extra { fill: #fff8ea; stroke: var(--mar); stroke-width: 2; cursor: help; }
+:root[data-tema="noite"] .carta .ponto-extra { fill: #13283d; }
+.legenda-mapa {
+  position: absolute; left: 24px; top: 20px; display: flex; flex-direction: column; gap: 4px;
+  background: color-mix(in srgb, #efe5cf 85%, transparent); padding: 6px 10px; border-radius: 4px;
+  font-size: .82rem; color: #4a3b2a;
+}
+:root[data-tema="noite"] .legenda-mapa { background: color-mix(in srgb, #13283d 85%, transparent); color: #c9d6e0; }
+.legenda-mapa span { display: flex; align-items: center; gap: 6px; }
+.legenda-mapa i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.legenda-mapa i.cheio { background: var(--terracota); }
+.legenda-mapa i.vazado { border: 2px solid var(--mar); background: #fff8ea; }
+.lista-lugares .titulo-lista { column-span: all; font-family: "Fraunces", serif; font-size: 1.2rem; border: 0; margin: 18px 0 2px; }
 .carta .rotulo { font-family: "Caveat", cursive; font-size: 15px; fill: currentColor; pointer-events: none; }
 .carta .titulo-carta { position: absolute; left: 24px; bottom: 18px; font-family: "Fraunces", serif; font-style: italic; font-size: .95rem; opacity: .8; }
 .carta-status { padding: 40px; text-align: center; color: var(--tinta-suave); }
@@ -389,3 +402,13 @@ button.link { background: none; border: 0; padding: 0; color: var(--mar); text-d
 .entrar { animation: entrar .5s ease both; }
 @keyframes entrar { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .entrar { animation: none; } html { scroll-behavior: auto; } }
+
+/* Lugares no mapa (área de edição) */
+.lista-admin li.lugar-admin { grid-template-columns: 28px 1fr 90px auto; }
+.lugar-admin .pino { font-size: 1.3rem; text-align: center; }
+.ano-lugar { width: 100%; padding: 6px 8px; border-radius: 6px; border: 1px solid var(--linha); background: var(--cartao); color: #2b2622; font: inherit; font-size: .88rem; }
+@media (max-width: 640px) {
+  .lista-admin li.lugar-admin { grid-template-columns: 28px 1fr; }
+  .lugar-admin .ano-lugar, .lugar-admin button { grid-column: 2; justify-self: start; }
+  .lugar-admin .ano-lugar { width: 120px; }
+}

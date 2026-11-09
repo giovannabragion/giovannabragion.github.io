@@ -24,6 +24,8 @@
   const capaDe = (p) => p.fotos[0] || { cena: "mar", seed: (p.titulo || "").length };
   const lugarCurto = (p) => (p.local || "").split(",")[0];
   const comMapa = () => POSTS.filter((p) => p.lat != null && p.lon != null);
+  const lugaresExtras = () => (S.lugares || []).filter((l) => l.lat != null && l.lon != null);
+  const temMapa = () => comMapa().length + lugaresExtras().length > 0;
 
   function polaroid(foto, legenda, canto, extra = "") {
     return `<figure class="polaroid" ${extra}>
@@ -67,7 +69,7 @@
         <div class="divisor">${GLIFOS}</div>
         <div class="titulo-secao"><h2>Registros recentes</h2>${POSTS.length ? `<a href="#/experiencias">ver todos →</a>` : ""}</div>
         ${POSTS.length ? `<div class="grade">${POSTS.slice(0, 3).map(cartaoPost).join("")}</div>` : vazio}
-        ${comMapa().length ? `<div class="divisor">${GLIFOS}</div>
+        ${temMapa() ? `<div class="divisor">${GLIFOS}</div>
         <div class="titulo-secao"><h2>Por onde passei</h2><a href="#/mapa">abrir o mapa →</a></div>
         <div id="mapa-mini"></div>` : ""}
       </div>`;
@@ -118,11 +120,15 @@
     },
 
     mapa() {
-      const lugares = comMapa();
+      const lugares = comMapa(), extras = lugaresExtras();
       const itens = lugares.map((p) => `<li><a href="#/post/${encodeURIComponent(p.slug)}"><strong>${esc(p.local || p.titulo)}</strong></a><br><small>${esc(p.titulo)} · ${ano(p.data)}</small></li>`);
+      const itensExtras = extras.map((l) => `<li><strong>${esc(l.nome)}</strong>${l.ano ? `<br><small>${esc(l.ano)}</small>` : ""}</li>`);
       return `<div class="container">
         <div class="post-cab"><h1>Por onde passei</h1><p class="meta">uma carta náutica das minhas experiências</p></div>
-        ${lugares.length ? `<div id="mapa-grande"></div><ul class="lista-lugares">${itens.join("")}</ul>` : vazio}
+        ${temMapa() ? `<div id="mapa-grande"></div><ul class="lista-lugares">
+          ${itens.length && itensExtras.length ? `<li class="titulo-lista">Experiências</li>` : ""}${itens.join("")}
+          ${itensExtras.length ? `<li class="titulo-lista">Outros lugares por onde passei</li>${itensExtras.join("")}` : ""}
+        </ul>` : vazio}
       </div>`;
     },
 
@@ -262,8 +268,8 @@
       app.querySelectorAll("[data-foto]").forEach((el) =>
         el.addEventListener("click", () => abrirLightbox(fotos, +el.dataset.foto)));
     }
-    if (nome === "mapa") window.desenharMapa?.(document.getElementById("mapa-grande"), comMapa(), true);
-    if (nome === "inicio") window.desenharMapa?.(document.getElementById("mapa-mini"), comMapa(), false);
+    if (nome === "mapa") window.desenharMapa?.(document.getElementById("mapa-grande"), comMapa(), true, lugaresExtras());
+    if (nome === "inicio") window.desenharMapa?.(document.getElementById("mapa-mini"), comMapa(), false, lugaresExtras());
   }
 
   // ---------- Carregar os dados ----------

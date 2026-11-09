@@ -32,8 +32,9 @@
       .attr("class", "rotulo").style("font-size", `${Math.max(12, r * 0.45)}px`).text("N");
   }
 
-  window.desenharMapa = function (alvo, posts, grande) {
+  window.desenharMapa = function (alvo, posts, grande, lugares = []) {
     if (!alvo) return;
+    lugares = (lugares || []).filter((l) => l.lat != null && l.lon != null);
     alvo.innerHTML = `<div class="carta"><div class="carta-status">desenhando a carta…</div></div>`;
     const caixa = alvo.querySelector(".carta");
 
@@ -63,22 +64,44 @@
       dica.className = "dica-mapa";
       caixa.appendChild(dica);
 
+      function mostrarDica(e, titulo, texto) {
+        const r = caixa.getBoundingClientRect(), pr = e.target.getBoundingClientRect();
+        dica.replaceChildren();
+        const forte = document.createElement("strong");
+        forte.textContent = titulo;
+        dica.append(forte);
+        if (texto) dica.append(document.createElement("br"), texto);
+        dica.style.display = "block";
+        dica.style.left = `${Math.max(4, Math.min(pr.left - r.left + 12, r.width - 230))}px`;
+        dica.style.top = `${pr.top - r.top + 14}px`;
+      }
+      const esconderDica = () => (dica.style.display = "none");
+
+      // Lugares por onde ela passou (sem experiência escrita): círculos vazados
+      const raioExtra = grande ? 5 : 4;
+      const extras = g.selectAll("g.extra").data(lugares).join("g").attr("class", "extra")
+        .attr("transform", (l) => `translate(${proj([l.lon, l.lat])})`);
+      extras.append("circle").attr("class", "ponto-extra").attr("r", raioExtra)
+        .on("mouseenter", (e, l) => mostrarDica(e, l.nome, l.ano ? `passei por aqui em ${l.ano}` : "passei por aqui"))
+        .on("click", (e, l) => mostrarDica(e, l.nome, l.ano ? `passei por aqui em ${l.ano}` : "passei por aqui"))
+        .on("mouseleave", esconderDica)
+        .append("title").text((l) => l.nome + (l.ano ? ` (${l.ano})` : ""));
+
+      // Experiências: pontos cheios, clicáveis
       const pontos = g.selectAll("g.lugar").data(posts).join("g").attr("class", "lugar")
         .attr("transform", (p) => `translate(${proj([p.lon, p.lat])})`);
       pontos.append("circle").attr("class", "ponto").attr("r", grande ? 6 : 5)
         .on("click", (e, p) => { location.hash = `#/post/${encodeURIComponent(p.slug || p.id)}`; })
-        .on("mouseenter", (e, p) => {
-          const r = caixa.getBoundingClientRect(), pr = e.target.getBoundingClientRect();
-          dica.replaceChildren();
-          const forte = document.createElement("strong");
-          forte.textContent = p.local || p.titulo;
-          dica.append(forte, document.createElement("br"), p.titulo);
-          dica.style.display = "block";
-          dica.style.left = `${Math.min(pr.left - r.left + 12, r.width - 230)}px`;
-          dica.style.top = `${pr.top - r.top + 14}px`;
-        })
-        .on("mouseleave", () => (dica.style.display = "none"))
+        .on("mouseenter", (e, p) => mostrarDica(e, p.local || p.titulo, p.titulo))
+        .on("mouseleave", esconderDica)
         .append("title").text((p) => `${p.local} — ${p.titulo}`);
+
+      if (lugares.length && posts.length) {
+        const legenda = document.createElement("div");
+        legenda.className = "legenda-mapa";
+        legenda.innerHTML = `<span><i class="cheio"></i>experiências</span><span><i class="vazado"></i>lugares por onde passei</span>`;
+        caixa.appendChild(legenda);
+      }
 
       rosaDosVentos(svg, L - 90, A - 100, grande ? 46 : 34);
       svg.append("text").attr("x", L * 0.62).attr("y", A * 0.42).attr("class", "rotulo")
@@ -95,6 +118,7 @@
           .on("zoom", (e) => {
             g.attr("transform", e.transform);
             pontos.select("circle").attr("r", 6 / Math.sqrt(e.transform.k)).attr("stroke-width", 1.5 / Math.sqrt(e.transform.k));
+            extras.select("circle").attr("r", raioExtra / Math.sqrt(e.transform.k)).attr("stroke-width", 2 / Math.sqrt(e.transform.k));
             g.selectAll(".terra").attr("stroke-width", 0.6 / e.transform.k);
             dica.style.display = "none";
           }));

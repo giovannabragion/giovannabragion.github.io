@@ -73,6 +73,7 @@
         <div class="admin-acoes">
           <a class="botao cheio" href="#/admin/novo">＋ Nova experiência</a>
           <a class="botao" href="#/admin/perfil">Editar “Sobre”</a>
+          <a class="botao" href="#/admin/lugares">📍 Lugares no mapa</a>
         </div>
       </div>
       ${avisoDemo()}
@@ -464,6 +465,96 @@
   }
 
   // ======================================================================
+  //  LUGARES POR ONDE PASSOU (pontos no mapa sem experiência escrita)
+  // ======================================================================
+  async function buscarNoMapa(q) {
+    const r = await fetch(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=5&accept-language=pt-BR&q=${encodeURIComponent(q)}`);
+    const vistos = new Set();
+    return (await r.json()).filter((l) => !vistos.has(l.display_name) && vistos.add(l.display_name));
+  }
+
+  async function editorLugares(app) {
+    const p = await D().lerPerfil();
+    const lugares = (p.lugares || []).map((l) => ({ ...l }));
+    sujo = false;
+
+    app.innerHTML = `<div class="container admin estreito-admin">
+      <a href="#/admin" class="voltar-admin" id="cancelar">← voltar</a>
+      <h1>Lugares no mapa</h1>
+      ${avisoDemo()}
+      <p class="dica" style="margin-bottom:16px">Lugares por onde você passou e que ainda não têm uma experiência escrita.
+        Eles aparecem no mapa como círculos vazados. As experiências entram no mapa sozinhas, pelo editor de cada uma.</p>
+      <div class="form-admin">
+        <div id="lista-lugares"></div>
+        <h3>Adicionar lugar</h3>
+        <div class="duas">
+          <label>Lugar <input id="novo-nome" maxlength="80" placeholder="Ex.: Fernando de Noronha"></label>
+          <label>Ano <small>(opcional)</small> <input id="novo-ano" maxlength="20" placeholder="Ex.: 2025"></label>
+        </div>
+        <div class="local-mapa">
+          <button type="button" class="botao pequeno" id="buscar">📍 Achar no mapa e adicionar</button>
+          <div id="resultados"></div>
+        </div>
+        <div id="msg"></div>
+        <div class="salvar"><button type="button" class="botao cheio" id="salvar">Salvar</button></div>
+      </div>
+    </div>`;
+
+    const caixa = app.querySelector("#lista-lugares");
+    const msg = app.querySelector("#msg");
+    function desenhar() {
+      caixa.innerHTML = lugares.length
+        ? `<ul class="lista-admin">${lugares.map((l, i) => `<li class="lugar-admin">
+            <span class="pino">📍</span>
+            <div class="lista-info"><strong>${esc(l.nome)}</strong><small>${l.ano ? esc(l.ano) + " · " : ""}${(+l.lat).toFixed(2)}, ${(+l.lon).toFixed(2)}</small></div>
+            <input data-ano="${i}" value="${esc(l.ano)}" placeholder="ano" aria-label="Ano" class="ano-lugar">
+            <button type="button" class="botao pequeno perigo" data-del="${i}">Tirar</button>
+          </li>`).join("")}</ul>`
+        : `<p class="vazio">Nenhum lugar extra ainda.</p>`;
+      caixa.querySelectorAll("[data-del]").forEach((b) => (b.onclick = () => { lugares.splice(+b.dataset.del, 1); sujo = true; desenhar(); }));
+      caixa.querySelectorAll("[data-ano]").forEach((inp) => inp.addEventListener("input", () => { lugares[+inp.dataset.ano].ano = inp.value.trim(); sujo = true; }));
+    }
+    desenhar();
+
+    app.querySelector("#buscar").onclick = async () => {
+      const nome = app.querySelector("#novo-nome").value.trim(), res = app.querySelector("#resultados");
+      if (!nome) { res.innerHTML = `<p class="msg erro">Escreva o nome do lugar primeiro.</p>`; return; }
+      res.innerHTML = `<p class="dica">Procurando…</p>`;
+      try {
+        const lista = await buscarNoMapa(nome);
+        if (!lista.length) { res.innerHTML = `<p class="msg erro">Não achei. Tente escrever de outro jeito (ex.: só a cidade).</p>`; return; }
+        res.innerHTML = `<p class="dica">Qual destes?</p>` + lista.map((l, i) =>
+          `<button type="button" class="opcao-local" data-i="${i}">${esc(l.display_name)}</button>`).join("");
+        res.querySelectorAll(".opcao-local").forEach((b) => (b.onclick = () => {
+          const l = lista[+b.dataset.i];
+          lugares.push({ nome, ano: app.querySelector("#novo-ano").value.trim(), lat: +(+l.lat).toFixed(4), lon: +(+l.lon).toFixed(4) });
+          app.querySelector("#novo-nome").value = ""; app.querySelector("#novo-ano").value = "";
+          res.innerHTML = ""; sujo = true; desenhar();
+        }));
+      } catch (e) { res.innerHTML = `<p class="msg erro">Não consegui buscar agora. Tente de novo em instantes.</p>`; }
+    };
+
+    app.querySelector("#cancelar").addEventListener("click", (e) => {
+      if (sujo && !confirm("Sair sem salvar? As mudanças serão perdidas.")) { e.preventDefault(); return; }
+      sujo = false;
+    });
+
+    app.querySelector("#salvar").onclick = async (ev) => {
+      const botao = ev.currentTarget;
+      try {
+        await ocupado(botao, async () => {
+          const atual = await D().lerPerfil(); // pega a versão mais nova do "Sobre" para não apagar nada
+          await D().salvarPerfil({ ...atual, lugares });
+        });
+        sujo = false;
+        await window.recarregarSite?.();
+        location.hash = "#/admin";
+        setTimeout(() => window.avisar?.("Lugares salvos. 📍"), 50);
+      } catch (err) { mensagem(msg, err.message); }
+    };
+  }
+
+  // ======================================================================
   //  TROCAR SENHA
   // ======================================================================
   function telaSenha(app) {
@@ -500,6 +591,7 @@
         if (acao === "novo") return await editor(app, null);
         if (acao === "editar") return await editor(app, id);
         if (acao === "perfil") return await editorPerfil(app);
+        if (acao === "lugares") return await editorLugares(app);
         if (acao === "senha") return telaSenha(app);
         return await painel(app);
       } catch (err) {

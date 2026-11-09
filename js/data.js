@@ -46,6 +46,14 @@ window.SITE = {
   },
   curriculo: "#", // link do PDF do currículo (ela envia pela área de edição)
   fotoPerfil: { cena: "mata", seed: 3 },
+  // Lugares por onde passou, sem experiência escrita (tirados dos destaques do Instagram dela).
+  // O ano fica em branco para ela completar.
+  lugares: [
+    { nome: "Rio de Janeiro, RJ", ano: "", lat: -22.9068, lon: -43.1729 },
+    { nome: "Minas Gerais", ano: "", lat: -19.9167, lon: -43.9345 },
+    { nome: "Florianópolis, SC", ano: "", lat: -27.5954, lon: -48.548 },
+    { nome: "Nordeste", ano: "", lat: -8.0476, lon: -34.877 },
+  ],
 };
 
 window.CATEGORIAS = {
