@@ -11,7 +11,7 @@
 */
 
 window.SITE = {
-  nome: "Giovanna Bragion",
+  nome: "Giovanna da Rocha Bragion",
   apelido: "Lua",
   frase: "Oceanógrafa pela USP. Entre embarques, costões e ilhas vulcânicas, eu conto aqui o que o mar me ensinou.",
   sobre: [
@@ -30,8 +30,8 @@ window.SITE = {
   idiomas: ["Português (nativo)", "Espanhol (fluente)", "Inglês (avançado)"],
   contatos: {
     email: "email@exemplo.com",
-    linkedin: "#",
-    lattes: "#",
+    linkedin: "https://www.linkedin.com/",
+    lattes: "https://buscatextual.cnpq.br/buscatextual/visualizacv.do?id=K1533633U6",
     instagram: "https://www.instagram.com/gi_bragion_/",
   },
   curriculo: "#", // link do PDF do currículo

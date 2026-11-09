@@ -71,7 +71,14 @@ h1, h2, h3 { font-family: "Fraunces", Georgia, serif; font-weight: 500; line-hei
 .topo .container { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 64px; }
 .marca { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--tinta); }
 .marca .lua { width: 28px; height: 28px; }
-.marca span { font-family: "Fraunces", serif; font-style: italic; font-size: 1.25rem; }
+.marca { min-width: 0; }
+.marca .lua { flex-shrink: 0; }
+.marca span { font-family: "Fraunces", serif; font-style: italic; font-size: 1.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 440px) {
+  .topo .container { padding: 0 14px; gap: 10px; }
+  .marca { gap: 8px; }
+  .marca span { font-size: 1.02rem; }
+}
 .menu { display: flex; gap: 4px; align-items: center; }
 .menu a {
   text-decoration: none; color: var(--tinta-suave);
