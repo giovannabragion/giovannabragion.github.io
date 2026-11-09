@@ -101,6 +101,14 @@ drop policy if exists "admin apaga arquivos" on storage.objects;
 create policy "admin apaga arquivos" on storage.objects
   for delete to authenticated using (bucket_id = 'fotos' and public.e_admin());
 
+-- ---------- Acesso pela API do site ----------
+-- (as regras acima continuam valendo; isto só deixa o site "enxergar" as tabelas)
+grant usage on schema public to anon, authenticated;
+grant select on public.posts, public.perfil to anon, authenticated;
+grant insert, update, delete on public.posts to authenticated;
+grant insert, update on public.perfil to authenticated;
+grant execute on function public.e_admin() to anon, authenticated;
+
 -- =====================================================================
 --  ÚLTIMA PARTE: dar permissão de edição para a conta dela.
 --  A conta precisa já existir (Authentication > Users > Add user).
