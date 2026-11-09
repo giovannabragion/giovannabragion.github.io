@@ -66,10 +66,13 @@
       const pontos = g.selectAll("g.lugar").data(posts).join("g").attr("class", "lugar")
         .attr("transform", (p) => `translate(${proj([p.lon, p.lat])})`);
       pontos.append("circle").attr("class", "ponto").attr("r", grande ? 6 : 5)
-        .on("click", (e, p) => { location.hash = `#/post/${p.id}`; })
+        .on("click", (e, p) => { location.hash = `#/post/${encodeURIComponent(p.slug || p.id)}`; })
         .on("mouseenter", (e, p) => {
           const r = caixa.getBoundingClientRect(), pr = e.target.getBoundingClientRect();
-          dica.innerHTML = `<strong>${p.local}</strong><br>${p.titulo}`;
+          dica.replaceChildren();
+          const forte = document.createElement("strong");
+          forte.textContent = p.local || p.titulo;
+          dica.append(forte, document.createElement("br"), p.titulo);
           dica.style.display = "block";
           dica.style.left = `${Math.min(pr.left - r.left + 12, r.width - 230)}px`;
           dica.style.top = `${pr.top - r.top + 14}px`;

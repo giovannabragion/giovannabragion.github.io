@@ -3,12 +3,14 @@
 Site pessoal (blog + portfólio) de uma oceanógrafa, no estilo "caderno de campo de viagem":
 fundo cor de papel, fotos em moldura de polaroid, mapa em estilo carta náutica e modo noturno "mar à noite".
 
-## Situação atual: versão 1 (só o visual)
+## Situação atual: versão 2 (visual + área de edição)
 
-- Todo o conteúdo é **de exemplo** e fica em `js/data.js`.
-- As "fotos" são desenhos provisórios. Para usar uma foto de verdade, troque
-  `{ cena: "mar", seed: 5, legenda: "..." }` por `{ url: "fotos/minha-foto.jpg", legenda: "..." }`.
-- A página **Área de edição** (`#/admin`) ainda é só a aparência; o login de verdade vem na etapa 2.
+- **Área de edição** (`#/admin`, link no rodapé): login, criar, editar, apagar e
+  publicar experiências (ou guardar como rascunho), enviar fotos, editar a página "Sobre",
+  enviar o currículo em PDF e trocar a senha.
+- Enquanto `js/config.js` estiver vazio, o site roda em **modo demonstração**: mostra o
+  conteúdo de exemplo de `js/data.js`, e a área de edição aceita qualquer e-mail e senha, mas nada fica salvo.
+- Para ligar de verdade, siga o **[passo a passo do Supabase](SUPABASE.md)**.
 
 ## Páginas
 
@@ -34,15 +36,18 @@ Depois abra http://localhost:8090 no navegador.
 
 ## Próximas etapas
 
-1. **Supabase**: criar o projeto, as tabelas e as regras de segurança (só a conta dela pode escrever).
-2. **Login e editor**: escrever, editar e apagar experiências e subir fotos pelo navegador.
-3. **Publicar** no GitHub Pages (conta dela ou sua) e, se quiserem, um domínio próprio.
+1. **Supabase**: seguir o [SUPABASE.md](SUPABASE.md) e colar a URL e a chave pública em `js/config.js`.
+2. **Publicar** no GitHub Pages (conta dela ou sua) e, se quiserem, um domínio próprio.
 
 ## Arquivos
 
 - `index.html`: estrutura da página
 - `css/style.css`: cores, fontes e visual
-- `js/data.js`: conteúdo de exemplo
-- `js/placeholder.js`: desenhos provisórios no lugar das fotos
+- `js/config.js`: ligação com o Supabase (URL e chave pública)
+- `js/dados.js`: lê e grava os dados (Supabase ou modo demonstração)
+- `js/admin.js`: área de edição (login, editor, página "Sobre", senha)
+- `js/app.js`: páginas do site, navegação e foto ampliada
 - `js/mapa.js`: mapa estilo carta náutica (d3 + world-atlas)
-- `js/app.js`: navegação entre páginas e foto ampliada
+- `js/data.js`: conteúdo de exemplo (modo demonstração)
+- `js/placeholder.js`: desenhos provisórios no lugar das fotos
+- `supabase/setup.sql`: tabelas, armazenamento de fotos e regras de segurança
