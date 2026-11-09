@@ -16,12 +16,12 @@
 window.SITE = {
   nome: "Giovanna da Rocha Bragion",
   apelido: "Lua",
-  frase: "Estudante de Oceanografia na USP e pesquisadora de iniciação científica. Investigo como os microplásticos carregam metais pelo litoral, do Paraná às Ilhas Canárias.",
+  frase: "✏️ Aqui escreva uma frase curta de apresentação: quem você é e o que te move no oceano.",
   sobre: [
     "Sou estudante de graduação em Oceanografia no Instituto Oceanográfico da Universidade de São Paulo (IOUSP).",
     "Faço iniciação científica com bolsa da FAPESP no **ProxyMar**, o Laboratório de Proxies Marinhos para o Futuro do Oceano, no IOUSP. Minha pesquisa estuda os **microplásticos** e os **metais** que ficam presos na superfície deles em praias e sedimentos costeiros.",
     "Em 2026 levei essa pesquisa para a Universidad de La Laguna, em Tenerife, nas Ilhas Canárias, para comparar o litoral do Paraná com o de lá.",
-    "Este espaço é o meu caderno de campo: cada experiência vira um registro, com fotos, lugares e o que aprendi.",
+    "*✏️ Aqui escreva um pouco sobre você, do seu jeito: por que escolheu a Oceanografia, o que mais gosta de fazer em campo, o que quer para o futuro.*",
   ],
   formacao: [
     { titulo: "Graduação em Oceanografia (em andamento)", lugar: "Universidade de São Paulo (IOUSP)", periodo: "2024 – atual" },
@@ -68,14 +68,14 @@ window.POSTS = [
     texto: [
       "Em 2026 fui para a Universidad de La Laguna, em Tenerife, para um estudo comparativo: a mesma metodologia aplicada em sedimentos costeiros do **Paraná** e das **Ilhas Canárias**.",
       "Coletamos sedimentos superficiais, extraímos e triamos os microplásticos, e identificamos o tipo (fragmentos, fibras, pellets) e o polímero de cada um com estereomicroscopia e FTIR.",
-      "Usar o mesmo método nos dois lados do Atlântico ajuda a entender o que muda de um ambiente para o outro: o formato da partícula, o tipo de plástico ou as condições da costa.",
+      "*✏️ Aqui escreva como foi viver e pesquisar em Tenerife: a chegada, a rotina na universidade, um lugar ou uma história que marcou.*",
       "*Trabalho feito com a orientação da Profa. Renata Hanae Nagai (IOUSP) e a colaboração de Javier Hernández-Borges (ULL), com bolsa da FAPESP.*",
     ],
     fotos: [
-      { cena: "falesia", seed: 1, legenda: "Costa de Tenerife" },
-      { cena: "costao", seed: 2, legenda: "Praia de rocha vulcânica" },
-      { cena: "montanha", seed: 4, legenda: "Paisagem vulcânica" },
-      { cena: "mar", seed: 5, legenda: "Atlântico" },
+      { cena: "falesia", seed: 1, legenda: "legenda da foto" },
+      { cena: "costao", seed: 2, legenda: "legenda da foto" },
+      { cena: "montanha", seed: 4, legenda: "legenda da foto" },
+      { cena: "mar", seed: 5, legenda: "legenda da foto" },
     ],
   },
   {
@@ -88,12 +88,13 @@ window.POSTS = [
     resumo: "As duas praias do litoral do Paraná onde coleto os sedimentos da minha iniciação científica.",
     texto: [
       "A minha pesquisa acontece em duas praias do litoral paranaense: a **Ilha do Superagui** e **Pontal do Sul**. As coletas de sedimento são sazonais, para ver se o que encontramos muda ao longo do ano.",
-      "Em campo, o trabalho é recolher o sedimento da praia de forma padronizada. Depois, no laboratório, as amostras são peneiradas e triadas, e os microplásticos são separados com técnicas como o teste da agulha quente.",
+      "No laboratório, as amostras são peneiradas e triadas, e os microplásticos são separados com técnicas como o teste da agulha quente.",
+      "*✏️ Aqui escreva como é um dia de coleta: a viagem até a praia, quem foi junto, o que é mais difícil e o que é mais bonito.*",
     ],
     fotos: [
-      { cena: "praia", seed: 13, legenda: "Faixa de areia" },
-      { cena: "mata", seed: 10, legenda: "Caminho até a praia" },
-      { cena: "costao", seed: 9, legenda: "Pontal do Sul" },
+      { cena: "praia", seed: 13, legenda: "legenda da foto" },
+      { cena: "mata", seed: 10, legenda: "legenda da foto" },
+      { cena: "costao", seed: 9, legenda: "legenda da foto" },
     ],
   },
   {
@@ -105,13 +106,14 @@ window.POSTS = [
     categoria: "pesquisa",
     resumo: "Como os microplásticos podem carregar metais pesados pelas praias, e como a gente mede isso no laboratório.",
     texto: [
-      "Microplásticos são partículas de plástico menores que 5 mm. Na praia, eles podem funcionar como pequenos \"carregadores\" de metais pesados, que ficam presos na superfície deles.",
+      "Microplásticos são partículas de plástico menores que 5 mm que podem atuar como vetores de metais pesados em ecossistemas costeiros.",
       "Na minha iniciação científica, com bolsa da FAPESP no **ProxyMar**, eu caracterizo a composição química dos microplásticos e meço os metais adsorvidos (Al, Cd, Cr, Cu, Fe, Mn, Sn, Ti e Zn) usando **ICP-OES** e **ICP-MS**.",
-      "Os primeiros resultados já confirmaram metais presos em pellets plásticos das praias estudadas. O próximo passo é relacionar o tipo de partícula com a quantidade de metal e ver se isso muda com as estações do ano.",
+      "Os resultados preliminares confirmaram a presença de metais adsorvidos em pellets plásticos das áreas de estudo. A próxima etapa busca relacionar os morfotipos (fragmentos, fibras, pellets) com a adsorção de metais e avaliar variações sazonais.",
+      "*✏️ Aqui escreva o que você mais gosta nessa pesquisa e como é a rotina no laboratório.*",
     ],
     fotos: [
-      { cena: "lua", seed: 7, legenda: "Noites de laboratório" },
-      { cena: "mar", seed: 8, legenda: "De onde vêm as amostras" },
+      { cena: "lua", seed: 7, legenda: "legenda da foto" },
+      { cena: "mar", seed: 8, legenda: "legenda da foto" },
     ],
   },
   {
@@ -124,12 +126,13 @@ window.POSTS = [
     resumo: "Participei dos primeiros registros com Sediment Profile Imagery na costa paulista, uma câmera que fotografa o sedimento por dentro.",
     texto: [
       "A *Sediment Profile Imagery* é uma câmera que desce até o fundo, entra no sedimento e tira uma foto do perfil, como se fosse um corte lateral do fundo do mar.",
-      "Participei dos primeiros registros desse método na região costeira de São Paulo. O trabalho virou um resumo apresentado no **VII Simpósio Brasileiro de Geologia e Geofísica Marinha**, em Vitória (ES).",
+      "O trabalho com os primeiros registros desse método na região costeira de São Paulo virou um resumo no **VII Simpósio Brasileiro de Geologia e Geofísica Marinha** (Vitória, ES, 2025).",
+      "*✏️ Aqui escreva como foi o embarque: o barco, a equipe, quanto tempo no mar e o que você viu nas imagens.*",
     ],
-    diario: { navio: "Embarcação do IOUSP", coordenadas: "Costa de São Paulo", profundidade: "plataforma interna", dias: "1" },
+    diario: { navio: "nome do navio ou barco", coordenadas: "ex.: 24°03'S 46°18'W", profundidade: "ex.: 30 m", dias: "ex.: 2" },
     fotos: [
-      { cena: "navio", seed: 6, legenda: "Saída para o embarque" },
-      { cena: "mar", seed: 14, legenda: "Ponto de coleta" },
+      { cena: "navio", seed: 6, legenda: "legenda da foto" },
+      { cena: "mar", seed: 14, legenda: "legenda da foto" },
     ],
   },
   {
@@ -142,10 +145,11 @@ window.POSTS = [
     resumo: "Minha primeira bolsa de pesquisa, estudando microplásticos e metais em ambientes costeiros do Atlântico Sul e da Antártica.",
     texto: [
       "Entre 2024 e 2025 fiz minha primeira pesquisa, com bolsa do Programa Unificado de Bolsas da USP: \"Microplásticos e metais associados no ambiente costeiro do Atlântico Sul e Antártica\".",
-      "Foi onde aprendi as técnicas que uso até hoje: extração de microplásticos, estereomicroscopia, digestão ácida e espectrometria (ICP-OES/MS).",
+      "Técnicas: extração de microplásticos, estereomicroscopia, digestão ácida e espectrometria (ICP-OES/MS). Orientação da Profa. Dra. Renata Hanae Nagai.",
+      "*✏️ Aqui escreva como foi começar na pesquisa: o que te surpreendeu e o que aprendeu.*",
     ],
     fotos: [
-      { cena: "por-do-sol", seed: 11, legenda: "Fim de tarde no IOUSP" },
+      { cena: "por-do-sol", seed: 11, legenda: "legenda da foto" },
     ],
   },
   {
@@ -158,10 +162,11 @@ window.POSTS = [
     resumo: "Em 2025 apresentei meu trabalho sobre microplásticos e metais em dois eventos científicos.",
     texto: [
       "Apresentei o trabalho \"Microplásticos e metais associados em ambientes costeiros do Atlântico Sul e da Antártica\" no **Simpósio Internacional de Iniciação Científica e Tecnológica da USP (SIICUSP)** e no **Congresso Brasileiro de Geoquímica**.",
-      "Também participei do Workshop sobre o talude continental da Bacia de Santos e, em 2026, do II Seminário sobre Monitoramento de Microplásticos.",
+      "Também participei do Workshop sobre o talude continental da Bacia de Santos (2025 e 2026) e do II Seminário sobre Monitoramento de Microplásticos (2026).",
+      "*✏️ Aqui escreva como foi apresentar: o nervosismo, as perguntas que recebeu, as pessoas que conheceu.*",
     ],
     fotos: [
-      { cena: "por-do-sol", seed: 15, legenda: "Dia de apresentação" },
+      { cena: "por-do-sol", seed: 15, legenda: "legenda da foto" },
     ],
   },
 ];
