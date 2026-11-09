@@ -11,11 +11,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400;1,9..144,500&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <script>
-    // Aplica o tema salvo (ou o do celular) antes de desenhar a página
+    // O site abre sempre no tema claro; o escuro só aparece se a pessoa escolher no botão 🌙
+    document.documentElement.dataset.tema = "dia";
     try {
-      const t = localStorage.getItem("tema") ||
-        (matchMedia("(prefers-color-scheme: dark)").matches ? "noite" : "dia");
-      document.documentElement.dataset.tema = t;
+      if (localStorage.getItem("tema") === "noite") document.documentElement.dataset.tema = "noite";
     } catch (e) {}
   </script>
 </head>
