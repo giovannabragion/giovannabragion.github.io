@@ -13,6 +13,6 @@
   NUNCA coloque aqui a chave "service_role" ou "secret".
 */
 window.CONFIG = {
-  SUPABASE_URL: "",
-  SUPABASE_CHAVE_PUBLICA: "",
+  SUPABASE_URL: "https://nyolmetxwjievvejebad.supabase.co",
+  SUPABASE_CHAVE_PUBLICA: "sb_publishable_iO2GR1_VrhoSzB9tIHijgg_6Tz34HFv",
 };
