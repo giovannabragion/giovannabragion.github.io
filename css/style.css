@@ -214,8 +214,8 @@ figure { margin: 0; }
 :root[data-tema="noite"] .carta .grade-geo { stroke: #2d4a66; }
 .carta .borda-geo { fill: none; stroke: #7a6448; stroke-width: 1.2; }
 .carta .ponto { fill: var(--terracota); stroke: #fff8ea; stroke-width: 1.5; cursor: pointer; }
-.carta .ponto:hover { r: 8; }
-.carta .ponto-extra { fill: #fff8ea; stroke: var(--mar); stroke-width: 2; cursor: help; }
+.carta .toque { fill: transparent; cursor: pointer; }
+.carta .ponto-extra { fill: #fff8ea; stroke: var(--mar); stroke-width: 2; }
 :root[data-tema="noite"] .carta .ponto-extra { fill: #13283d; }
 .legenda-mapa {
   position: absolute; left: 24px; top: 20px; display: flex; flex-direction: column; gap: 4px;

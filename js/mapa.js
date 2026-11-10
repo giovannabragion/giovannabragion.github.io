@@ -65,35 +65,55 @@
       caixa.appendChild(dica);
 
       function mostrarDica(e, titulo, texto) {
-        const r = caixa.getBoundingClientRect(), pr = e.target.getBoundingClientRect();
+        const r = caixa.getBoundingClientRect(), pr = e.currentTarget.getBoundingClientRect();
+        const cx = pr.left + pr.width / 2 - r.left, cy = pr.top + pr.height / 2 - r.top;
         dica.replaceChildren();
         const forte = document.createElement("strong");
         forte.textContent = titulo;
         dica.append(forte);
         if (texto) dica.append(document.createElement("br"), texto);
         dica.style.display = "block";
-        dica.style.left = `${Math.max(4, Math.min(pr.left - r.left + 12, r.width - 230))}px`;
-        dica.style.top = `${pr.top - r.top + 14}px`;
+        dica.style.left = `${Math.max(4, Math.min(cx + 10, r.width - Math.min(230, r.width - 8)))}px`;
+        dica.style.top = `${cy + 12}px`;
       }
       const esconderDica = () => (dica.style.display = "none");
 
+      // Tamanho dos pontos pensado em pixels de tela: em celular o mapa encolhe,
+      // então os pontos crescem no desenho para continuarem visíveis e fáceis de tocar.
+      const escala = Math.max(0.2, caixa.clientWidth / L);           // px de tela por unidade do desenho
+      const raioPonto = Math.max(grande ? 6 : 5, 5.5 / escala);       // ~11 px de diâmetro no mínimo
+      const raioExtra = Math.max(grande ? 5 : 4, 4.5 / escala);
+      const raioToque = 15 / escala;                                  // área de toque de ~30 px
+      let zoomK = 1;
+
+      const bordaPonto = Math.max(1.5, 1.5 / escala), bordaExtra = Math.max(2, 2 / escala);
+      function desenharPonto(sel, classe, raio) {
+        sel.append("circle").attr("class", classe).attr("r", raio).attr("pointer-events", "none")
+          .style("stroke-width", classe === "ponto" ? bordaPonto : bordaExtra);
+        return sel.append("circle").attr("class", "toque").attr("r", raioToque);
+      }
+
       // Lugares por onde ela passou (sem experiência escrita): círculos vazados
-      const raioExtra = grande ? 5 : 4;
       const extras = g.selectAll("g.extra").data(lugares).join("g").attr("class", "extra")
         .attr("transform", (l) => `translate(${proj([l.lon, l.lat])})`);
-      extras.append("circle").attr("class", "ponto-extra").attr("r", raioExtra)
-        .on("mouseenter", (e, l) => mostrarDica(e, l.nome, l.ano ? `passei por aqui em ${l.ano}` : "passei por aqui"))
-        .on("click", (e, l) => mostrarDica(e, l.nome, l.ano ? `passei por aqui em ${l.ano}` : "passei por aqui"))
-        .on("mouseleave", esconderDica)
+      const dicaExtra = (e, l) => mostrarDica(e, l.nome, l.ano ? `passei por aqui em ${l.ano}` : "passei por aqui");
+      desenharPonto(extras, "ponto-extra", raioExtra)
+        .on("mouseenter", dicaExtra).on("click", dicaExtra).on("mouseleave", esconderDica)
         .append("title").text((l) => l.nome + (l.ano ? ` (${l.ano})` : ""));
 
       // Experiências: pontos cheios, clicáveis
       const pontos = g.selectAll("g.lugar").data(posts).join("g").attr("class", "lugar")
         .attr("transform", (p) => `translate(${proj([p.lon, p.lat])})`);
-      pontos.append("circle").attr("class", "ponto").attr("r", grande ? 6 : 5)
+      desenharPonto(pontos, "ponto", raioPonto)
         .on("click", (e, p) => { location.hash = `#/post/${encodeURIComponent(p.slug || p.id)}`; })
-        .on("mouseenter", (e, p) => mostrarDica(e, p.local || p.titulo, p.titulo))
-        .on("mouseleave", esconderDica)
+        .on("mouseenter", (e, p) => {
+          mostrarDica(e, p.local || p.titulo, p.titulo);
+          d3.select(e.currentTarget.parentNode).select(".ponto").attr("r", (raioPonto * 1.35) / Math.sqrt(zoomK));
+        })
+        .on("mouseleave", (e) => {
+          esconderDica();
+          d3.select(e.currentTarget.parentNode).select(".ponto").attr("r", raioPonto / Math.sqrt(zoomK));
+        })
         .append("title").text((p) => `${p.local} — ${p.titulo}`);
 
       if (lugares.length && posts.length) {
@@ -117,8 +137,11 @@
         svg.call(d3.zoom().scaleExtent([1, 12]).translateExtent([[0, 0], [L, A]])
           .on("zoom", (e) => {
             g.attr("transform", e.transform);
-            pontos.select("circle").attr("r", 6 / Math.sqrt(e.transform.k)).attr("stroke-width", 1.5 / Math.sqrt(e.transform.k));
-            extras.select("circle").attr("r", raioExtra / Math.sqrt(e.transform.k)).attr("stroke-width", 2 / Math.sqrt(e.transform.k));
+            zoomK = e.transform.k;
+            const s = Math.sqrt(zoomK);
+            pontos.select(".ponto").attr("r", raioPonto / s).style("stroke-width", bordaPonto / s);
+            extras.select(".ponto-extra").attr("r", raioExtra / s).style("stroke-width", bordaExtra / s);
+            g.selectAll(".toque").attr("r", raioToque / zoomK);
             g.selectAll(".terra").attr("stroke-width", 0.6 / e.transform.k);
             dica.style.display = "none";
           }));
