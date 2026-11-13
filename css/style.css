@@ -412,3 +412,204 @@ button.link { background: none; border: 0; padding: 0; color: var(--mar); text-d
   .lugar-admin .ano-lugar, .lugar-admin button { grid-column: 2; justify-self: start; }
   .lugar-admin .ano-lugar { width: 120px; }
 }
+
+/* =====================================================================
+   REMODELAGEM — ajustes por cima do visual original.
+   Mesma ideia de "caderno de campo", com mais personalidade:
+   papel quadriculado, caneta azul, linha de margem, fita adesiva.
+   ===================================================================== */
+:root {
+  --papel: #F6F3EB;
+  --papel-2: #ECE7DA;
+  --quadricula: rgba(72, 112, 160, .10);
+  --caneta: #2A4A9A;          /* tinta de caneta esferográfica azul */
+  --margem: #D4766B;          /* a linha vermelha da margem do caderno */
+  --fita-1: rgba(156, 196, 176, .78);  /* vidro do mar */
+  --fita-2: rgba(240, 214, 120, .78);  /* fita amarela */
+  --fita-3: rgba(176, 194, 222, .80);  /* fita azul-clara */
+  --terracota: var(--caneta); /* tudo que era terracota vira caneta azul */
+  --sombra: 0 1px 1px rgba(40, 30, 20, .10), 0 10px 18px -10px rgba(40, 30, 20, .35);
+}
+:root[data-tema="noite"] {
+  --quadricula: rgba(160, 200, 240, .07);
+  --caneta: #A9C1F2;
+  --margem: #D98B80;
+  --fita-1: rgba(156, 196, 176, .55);
+  --fita-2: rgba(240, 214, 120, .50);
+  --fita-3: rgba(176, 194, 222, .55);
+  --terracota: var(--caneta);
+}
+
+/* Papel quadriculado de caderno de campo */
+body {
+  background-color: var(--papel);
+  background-image:
+    linear-gradient(var(--quadricula) 1px, transparent 1px),
+    linear-gradient(90deg, var(--quadricula) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-position: -1px -1px;
+}
+a { color: var(--caneta); text-underline-offset: 3px; }
+h1, h2, h3 { font-weight: 400; letter-spacing: -.015em; }
+
+/* Cabeçalho mais discreto, nome em pé (sem itálico) */
+.topo { background: color-mix(in srgb, var(--papel) 92%, transparent); }
+.marca span { font-style: normal; font-weight: 500; letter-spacing: -.01em; }
+.marca .lua { color: var(--caneta); }
+.menu a { border-radius: 4px; }
+.menu a.ativo { background: transparent; color: var(--tinta); text-decoration: underline; text-decoration-color: var(--caneta); text-decoration-thickness: 2px; text-underline-offset: 6px; }
+
+/* Anotações à mão em caneta azul (substituem as etiquetas em maiúsculas) */
+.anotacao {
+  font-family: "Caveat", cursive; font-size: 1.35rem; line-height: 1; color: var(--caneta);
+  text-decoration: none; display: inline-block;
+}
+
+/* Botões com cara de papel, menos "pílula" */
+.botao { border-radius: 4px; border-width: 1.5px; }
+.botao.cheio { background: var(--caneta); border-color: var(--caneta); color: #fff; }
+:root[data-tema="noite"] .botao.cheio { color: #0d1b2a; }
+.botao:hover { transform: none; box-shadow: 3px 3px 0 color-mix(in srgb, var(--caneta) 35%, transparent); }
+
+/* Polaroid com fita adesiva em vez de flutuar */
+.polaroid { position: relative; box-shadow: var(--sombra); }
+.polaroid::before {
+  content: ""; position: absolute; top: -11px; left: 50%; width: 38%; height: 24px;
+  transform: translateX(-50%) rotate(-3deg);
+  background: var(--fita, var(--fita-1));
+  box-shadow: 0 1px 1px rgba(0,0,0,.06);
+  clip-path: polygon(0 8%, 3% 0, 97% 4%, 100% 0, 98% 50%, 100% 100%, 4% 94%, 0 100%, 2% 50%); /* pontas rasgadas */
+}
+.polaroid figcaption { color: var(--caneta); }
+:root[data-tema="noite"] .polaroid figcaption { color: #2A4A9A; }
+.polaroid figcaption small { color: #8a7f72; }
+
+/* ============ Capa ============ */
+.capa { padding-top: 72px; align-items: center; }
+.capa h1 {
+  font-style: normal; font-weight: 350; font-size: clamp(2.8rem, 6.4vw, 5rem); line-height: .98;
+  font-variation-settings: "opsz" 144; letter-spacing: -.03em; margin-bottom: .35em;
+}
+.capa p.frase { font-size: 1.2rem; max-width: 30em; }
+.pilha-area { position: relative; }
+.pilha .polaroid:nth-child(1) { --fita: var(--fita-1); }
+.pilha .polaroid:nth-child(2) { --fita: var(--fita-2); }
+.pilha .polaroid:nth-child(3) { --fita: var(--fita-3); }
+.pilha .polaroid:hover { transform: none; }
+/* o único movimento da página: as fotos sendo coladas uma vez, ao abrir */
+@keyframes colar { from { translate: 0 -16px; opacity: 0; } }
+.pilha .polaroid { animation: colar .55s cubic-bezier(.2, .8, .3, 1) both; }
+.pilha .polaroid:nth-child(2) { animation-delay: .12s; }
+.pilha .polaroid:nth-child(3) { animation-delay: .24s; }
+.pilha-area { padding-top: 64px; }
+.nota-mao {
+  position: absolute; left: 0; top: 0; margin: 0; z-index: 3;
+  font-family: "Caveat", cursive; font-size: 1.55rem; line-height: 1; color: var(--caneta); transform: rotate(-3deg);
+  display: flex; flex-direction: column; align-items: flex-start; gap: 0;
+}
+.nota-mao .seta { order: 2; width: 64px; height: 42px; margin-left: 28px; }
+.nota-mao .seta path { fill: none; stroke: var(--caneta); stroke-width: 2.2; stroke-linecap: round; }
+@media (max-width: 820px) {
+  .capa { padding-top: 40px; }
+  .pilha-area { padding-top: 56px; }
+}
+
+/* Títulos de seção */
+.titulo-secao { margin-top: 72px; border-bottom: 1.5px solid var(--tinta); padding-bottom: 8px; }
+.titulo-secao h2 { font-size: 1.9rem; }
+.titulo-secao a { font-size: .95rem; }
+
+/* ============ Entradas de caderno (início) ============ */
+.entradas { list-style: none; margin: 0; padding: 0; position: relative; }
+.entradas::before { /* linha vermelha da margem */
+  content: ""; position: absolute; top: 0; bottom: 0; left: 112px; border-left: 1.5px solid var(--margem); opacity: .7;
+}
+.entrada {
+  display: grid; grid-template-columns: 112px 1fr 168px; gap: 0 28px; align-items: start;
+  padding: 26px 0; color: inherit; text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--caneta) 22%, transparent);
+}
+.entrada .margem {
+  font-family: "Caveat", cursive; font-size: 1.35rem; color: var(--caneta); text-align: right; padding-right: 18px; line-height: 1.2;
+}
+.entrada-texto { display: grid; gap: 4px; max-width: 36em; }
+.entrada-texto strong { font-family: "Fraunces", serif; font-weight: 400; font-size: 1.5rem; line-height: 1.2; letter-spacing: -.01em; }
+.entrada .lugar { color: var(--tinta-suave); font-size: .95rem; }
+.entrada .resumo { color: var(--tinta-suave); font-size: .98rem; margin-top: 4px; }
+.entrada:hover strong { text-decoration: underline; text-decoration-color: var(--caneta); text-decoration-thickness: 2px; text-underline-offset: 5px; }
+.entrada .mini {
+  position: relative; display: block; background: var(--cartao); padding: 6px 6px 16px; box-shadow: var(--sombra);
+  transform: rotate(var(--giro, 1deg)); margin-top: 6px;
+}
+.entrada .mini img { aspect-ratio: 4 / 3; object-fit: cover; width: 100%; }
+.entrada .mini::before {
+  content: ""; position: absolute; top: -8px; left: 50%; width: 46%; height: 18px; transform: translateX(-50%) rotate(4deg);
+  background: var(--fita, var(--fita-2));
+}
+@media (max-width: 720px) {
+  .entradas::before { left: 0; }
+  .entrada { grid-template-columns: 1fr 110px; gap: 6px 16px; padding-left: 14px; }
+  .entrada .margem { grid-column: 1 / -1; text-align: left; padding: 0; }
+}
+
+/* ============ Cartões (página Experiências) ============ */
+.grade { gap: 48px 32px; padding-top: 12px; }
+.cartao-post .info { padding-top: 16px; }
+.cartao-post h3 { font-size: 1.35rem; margin: 2px 0 4px; }
+.cartao-post:hover .polaroid { transform: rotate(var(--giro, 0deg)); }
+.cartao-post:hover h3 { text-decoration: underline; text-decoration-color: var(--caneta); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+.filtro { border-radius: 4px; text-decoration: none; }
+.filtro.ativo { background: var(--caneta); border-color: var(--caneta); color: #fff; }
+
+/* ============ Página de cada experiência ============ */
+.post-cab h1 { font-weight: 350; font-variation-settings: "opsz" 144; }
+.post-cab .meta { display: flex; flex-wrap: wrap; gap: 0 18px; color: var(--caneta); }
+.post-texto p:first-child::first-letter { color: var(--caneta); font-weight: 300; }
+.diario {
+  background: transparent; border: 1.5px solid color-mix(in srgb, var(--caneta) 55%, transparent);
+  border-radius: 2px; box-shadow: 4px 4px 0 color-mix(in srgb, var(--caneta) 14%, transparent);
+}
+.diario h3 { color: var(--caneta); }
+.diario dt { text-transform: none; letter-spacing: 0; font-family: "Caveat", cursive; font-size: 1.15rem; color: var(--caneta); }
+.galeria-post .polaroid:nth-child(3n+1) { --fita: var(--fita-1); }
+.galeria-post .polaroid:nth-child(3n+2) { --fita: var(--fita-2); }
+.galeria-post .polaroid:nth-child(3n) { --fita: var(--fita-3); }
+
+/* ============ Mapa, linha do tempo, galeria, sobre ============ */
+.carta .ponto-extra { stroke: var(--margem); }
+.legenda-mapa i.vazado { border-color: var(--margem); }
+.tempo::before { border-left-color: var(--margem); border-left-style: solid; opacity: .7; }
+.tempo-item::before { border-color: var(--caneta); }
+.tempo-item.marco::before { background: var(--caneta); border-color: var(--caneta); }
+.mural .polaroid:nth-child(3n+1) { --fita: var(--fita-1); }
+.mural .polaroid:nth-child(3n+2) { --fita: var(--fita-2); }
+.mural .polaroid:nth-child(3n) { --fita: var(--fita-3); }
+.mural .polaroid { margin-top: 14px; }
+.sobre h1 { font-style: normal; font-weight: 350; font-variation-settings: "opsz" 144; }
+.sobre .polaroid { --fita: var(--fita-2); }
+.bloco li { border-bottom-style: solid; border-bottom-color: color-mix(in srgb, var(--caneta) 18%, transparent); }
+
+/* Sem a animação de "subir" em cada bloco: só o momento das fotos na capa */
+.entrar { animation: none; }
+@media (prefers-reduced-motion: reduce) { .pilha .polaroid { animation: none; } }
+
+/* ============ Easter egg: tatuagens dela no fundo ============ */
+.tatuagem {
+  position: fixed; z-index: 0; right: -3vw; bottom: -6vh;
+  height: min(var(--altura, 86vh), 900px); aspect-ratio: var(--proporcao, .6);
+  background-color: var(--caneta);
+  -webkit-mask: var(--desenho) center / contain no-repeat;
+          mask: var(--desenho) center / contain no-repeat;
+  opacity: .075; transform: rotate(var(--giro-tatu, 8deg));
+  transition: opacity .6s ease;
+}
+/* quem passa o mouse por cima (onde não tem conteúdo) "descobre" o desenho */
+.tatuagem:hover { opacity: .28; }
+.topo, main, .rodape { position: relative; z-index: 1; }
+main { pointer-events: none; }
+main > * { pointer-events: auto; }
+:root[data-tema="noite"] .tatuagem { opacity: .09; }
+@media (max-width: 720px) {
+  .tatuagem { height: calc(var(--altura, 86vh) * .66); right: -14vw; opacity: .06; }
+}
+
+.tatuagem[data-pagina="sobre"] { --giro-tatu: -6deg; right: 2vw; bottom: 4vh; }

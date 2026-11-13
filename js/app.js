@@ -36,10 +36,10 @@
 
   function cartaoPost(p, i) {
     const c = CAT[p.categoria] || { nome: p.categoria, icone: "" };
-    return `<a class="cartao-post entrar" href="#/post/${encodeURIComponent(p.slug)}" style="--giro:${giro(i)}deg; animation-delay:${i * 60}ms">
+    return `<a class="cartao-post" href="#/post/${encodeURIComponent(p.slug)}" style="--giro:${giro(i)}deg; --fita:${FITAS[i % FITAS.length]}">
       ${polaroid(capaDe(p), lugarCurto(p), ano(p.data))}
       <div class="info">
-        <span class="etiqueta">${c.icone} ${esc(c.nome)}</span>
+        <span class="anotacao">${esc(c.nome.toLowerCase())}</span>
         <h3>${esc(p.titulo)}</h3>
         <p>${esc(p.resumo)}</p>
       </div>
@@ -47,30 +47,48 @@
   }
 
   const vazio = `<p class="vazio">Em breve, os primeiros registros. 🌊</p>`;
+  const FITAS = ["var(--fita-1)", "var(--fita-2)", "var(--fita-3)"];
+
+  // Entrada de caderno: data na margem, texto, foto colada com fita
+  function entrada(p, i) {
+    const c = CAT[p.categoria] || { nome: p.categoria };
+    return `<li><a class="entrada" href="#/post/${encodeURIComponent(p.slug)}">
+      <span class="margem">${dataCurta(p.data)}</span>
+      <span class="entrada-texto">
+        <span class="anotacao">${esc(c.nome.toLowerCase())}</span>
+        <strong>${esc(p.titulo)}</strong>
+        <span class="lugar">${esc(p.local)}</span>
+        <span class="resumo">${esc(p.resumo)}</span>
+      </span>
+      <span class="mini" style="--fita:${FITAS[i % FITAS.length]}; --giro:${giro(i + 1)}deg"><img src="${esc(fotoSrc(capaDe(p)))}" alt="" loading="lazy"></span>
+    </a></li>`;
+  }
 
   // ---------- Páginas ----------
   const paginas = {
     inicio() {
       const capa = POSTS.slice(0, 3);
       return `<div class="container">
-        <section class="capa entrar">
+        <section class="capa">
           <div>
-            <p class="ola">olá, eu sou a</p>
-            <h1>${esc(S.nome)} <span class="lua-nome">🌙</span></h1>
+            <h1>${esc(S.nome)}</h1>
             <p class="frase">${esc(S.frase)}</p>
             <div class="acoes">
               <a class="botao cheio" href="#/experiencias">Ver experiências</a>
               <a class="botao" href="#/sobre">Sobre mim</a>
             </div>
           </div>
-          <div class="pilha">${(capa.length ? capa : [{ fotos: [{ cena: "mar", seed: 2 }], local: "", data: "" }])
-            .map((p) => polaroid(capaDe(p), lugarCurto(p), ano(p.data))).join("")}</div>
+          <div class="pilha-area">
+            <div class="pilha">${(capa.length ? capa : [{ fotos: [{ cena: "mar", seed: 2 }], local: "", data: "" }])
+              .map((p, i) => polaroid(capaDe(p), lugarCurto(p), ano(p.data), `style="--fita:${FITAS[i % FITAS.length]}"`)).join("")}</div>
+            ${capa[0] ? `<p class="nota-mao" aria-hidden="true">
+              <svg viewBox="0 0 90 60" class="seta"><path d="M6 8 C 30 4, 62 14, 78 46 M78 46 l-12 -4 M78 46 l2 -12"/></svg>
+              ${esc(lugarCurto(capa[0]))}, ${ano(capa[0].data)}</p>` : ""}
+          </div>
         </section>
-        <div class="divisor">${GLIFOS}</div>
-        <div class="titulo-secao"><h2>Registros recentes</h2>${POSTS.length ? `<a href="#/experiencias">ver todos →</a>` : ""}</div>
-        ${POSTS.length ? `<div class="grade">${POSTS.slice(0, 3).map(cartaoPost).join("")}</div>` : vazio}
-        ${temMapa() ? `<div class="divisor">${GLIFOS}</div>
-        <div class="titulo-secao"><h2>Por onde passei</h2><a href="#/mapa">abrir o mapa →</a></div>
+        <div class="titulo-secao"><h2>Registros recentes</h2>${POSTS.length ? `<a href="#/experiencias">Ver todas as experiências</a>` : ""}</div>
+        ${POSTS.length ? `<ol class="entradas">${POSTS.slice(0, 4).map(entrada).join("")}</ol>` : vazio}
+        ${temMapa() ? `<div class="titulo-secao"><h2>Por onde passei</h2><a href="#/mapa">Abrir o mapa</a></div>
         <div id="mapa-mini"></div>` : ""}
       </div>`;
     },
@@ -94,10 +112,10 @@
       const c = CAT[p.categoria] || { nome: p.categoria, icone: "" };
       const d = p.diario;
       return `<article class="container estreito">
-        <header class="post-cab entrar">
-          <a class="etiqueta" href="#/experiencias/${esc(p.categoria)}" style="text-decoration:none">${c.icone} ${esc(c.nome)}</a>
+        <header class="post-cab">
+          <a class="anotacao" href="#/experiencias/${esc(p.categoria)}">${esc(c.nome.toLowerCase())}</a>
           <h1>${esc(p.titulo)}</h1>
-          <div class="meta">${p.local ? esc(p.local) + " · " : ""}${dataCurta(p.data)}</div>
+          <div class="meta"><span>${esc(p.local)}</span><span>${dataCurta(p.data)}</span></div>
         </header>
       </article>
       ${p.fotos.length ? `<div class="container">
@@ -115,13 +133,13 @@
       <div class="container">
         ${p.fotos.length > 1 ? `<div class="galeria-post">${p.fotos.slice(1).map((f, i) =>
           polaroid(f, f.legenda, "", `data-foto="${i + 1}"`)).join("")}</div>` : ""}
-        <div class="estreito" style="margin:0 auto"><a class="voltar" href="#/experiencias">← todas as experiências</a></div>
+        <div class="estreito" style="margin:0 auto"><a class="voltar" href="#/experiencias">Voltar para as experiências</a></div>
       </div>`;
     },
 
     mapa() {
       const lugares = comMapa(), extras = lugaresExtras();
-      const itens = lugares.map((p) => `<li><a href="#/post/${encodeURIComponent(p.slug)}"><strong>${esc(p.local || p.titulo)}</strong></a><br><small>${esc(p.titulo)} · ${ano(p.data)}</small></li>`);
+      const itens = lugares.map((p) => `<li><a href="#/post/${encodeURIComponent(p.slug)}"><strong>${esc(p.local || p.titulo)}</strong></a><br><small>${esc(p.titulo)}, ${ano(p.data)}</small></li>`);
       const itensExtras = extras.map((l) => `<li><strong>${esc(l.nome)}</strong>${l.ano ? `<br><small>${esc(l.ano)}</small>` : ""}</li>`);
       return `<div class="container">
         <div class="post-cab"><h1>Por onde passei</h1><p class="meta">uma carta náutica das minhas experiências</p></div>
@@ -139,7 +157,7 @@
       ].sort((a, b) => String(b.data).localeCompare(String(a.data)));
       return `<div class="container estreito">
         <div class="post-cab"><h1>Trajetória</h1><p class="meta">os caminhos até aqui</p></div>
-        ${itens.length ? `<div class="tempo">${itens.map((it, i) => `<div class="tempo-item entrar ${it.marco ? "marco" : ""}" style="animation-delay:${i * 50}ms">
+        ${itens.length ? `<div class="tempo">${itens.map((it, i) => `<div class="tempo-item ${it.marco ? "marco" : ""}">
           <div class="ano">${dataCurta(it.data)}</div>
           ${it.link ? `<a href="${it.link}"><h3>${it.icone || ""} ${esc(it.titulo)}</h3></a>` : `<h3>${esc(it.titulo)}</h3>`}
           <p>${esc(it.texto)}</p>
@@ -161,10 +179,9 @@
         ? `<div class="bloco"><h3>${titulo}</h3><ul>${itens.map(fn).join("")}</ul></div>` : "";
       const botao = (url, texto) => url && url !== "#" ? `<a class="botao" href="${esc(linkSeguro(url))}" target="_blank" rel="noopener">${texto}</a>` : "";
       return `<div class="container">
-        <section class="sobre entrar">
+        <section class="sobre">
           ${polaroid(S.fotoPerfil || { cena: "mata", seed: 3 }, (S.apelido || S.nome || "") + " 🌙", "")}
           <div>
-            <p class="ola mao" style="font-size:1.5rem;color:var(--terracota);margin:0">sobre mim</p>
             <h1>${esc(S.nome)}</h1>
             ${(S.sobre || []).map((t) => `<p>${formatar(t)}</p>`).join("")}
             <div class="contatos">
@@ -175,7 +192,7 @@
           </div>
         </section>
         <div class="blocos">
-          ${lista("formação", S.formacao, (f) => `<li>${esc(f.titulo)}<small>${esc([f.lugar, f.periodo].filter(Boolean).join(" · "))}</small></li>`)}
+          ${lista("formação", S.formacao, (f) => `<li>${esc(f.titulo)}<small>${esc([f.lugar, f.periodo].filter(Boolean).join(", "))}</small></li>`)}
           ${lista("o que eu sei fazer", S.competencias, (c) => `<li>${esc(c)}</li>`)}
           ${lista("idiomas", S.idiomas, (c) => `<li>${esc(c)}</li>`)}
         </div>
@@ -237,6 +254,24 @@
       window.Admin.descartar();
     }
     hashAnterior = location.hash;
+
+    // Easter egg: o desenho de uma tatuagem dela no fundo de cada página
+    // arquivo em img/tatuagens/ (o caminho é lido a partir da pasta css/), proporção (largura / altura) e altura na tela
+    const TATUAGENS = {
+      inicio: { arquivo: "peixes-voadores", proporcao: 640 / 1059, altura: "86vh" },
+      sobre: { arquivo: "selo-melancia", proporcao: 520 / 655, altura: "62vh" },
+      // experiencias, mapa, trajetoria, galeria: esperando as próximas tatuagens
+    };
+    const nomePagina = (location.hash.replace(/^#\/?/, "").split("/")[0]) || "inicio";
+    const tatu = document.getElementById("tatuagem");
+    const qual = TATUAGENS[nomePagina];
+    tatu.style.display = qual ? "" : "none";
+    if (qual) {
+      tatu.style.setProperty("--desenho", `url("../img/tatuagens/${qual.arquivo}.png")`);
+      tatu.style.setProperty("--proporcao", qual.proporcao);
+      tatu.style.setProperty("--altura", qual.altura);
+    }
+    tatu.dataset.pagina = nomePagina;
 
     const partes = location.hash.replace(/^#\/?/, "").split("/").filter(Boolean).map(decodeURIComponent);
     const nome = partes[0] || "inicio";
